@@ -1,0 +1,52 @@
+# CPU_Scheduling_Simulation
+
+This project is part of the Operating Systems course and implements three classic CPU scheduling algorithms:
+
+- **FCFS** – First Come First Serve
+- **SJF** – Shortest Job First (Non-preemptive)
+- **Round Robin** – with time quantum = 2
+
+---
+
+## What This Project Does
+
+1. Implements all three algorithms **from scratch** in Python.
+2. Defines a `Process` class to represent process properties and track runtime stats.
+3. For each algorithm, the following metrics are calculated per process:
+   - **Start Time**
+   - **Completion Time**
+   - **Turnaround Time**
+   - **Waiting Time**
+   - **Response Time**
+4. The Round Robin implementation includes correct queue handling and process arrival checks.
+5. Output is printed to terminal and can be saved to `sample_output.txt`.
+
+---
+
+##  Project Structure
+
+| File Name            | Description |
+|----------------------|-------------|
+| `fcfs_sjf_rr.py`     | Python code implementing all 3 algorithms and running a sample test |
+| `sample_output.txt`  | Output of the algorithms on a sample set of processes |
+| `README.md`          | This project guide |
+
+---
+
+##  Sample Input
+
+| Process | Arrival Time | Burst Time |
+|---------|--------------|------------|
+| P1      | 0            | 5          |
+| P2      | 1            | 3          |
+| P3      | 2            | 8          |
+| P4      | 3            | 6          |
+
+---
+
+## ⚙️ How to Run
+
+Open a terminal in the project folder and run:
+
+```bash
+python fcfs_sjf_rr.py
