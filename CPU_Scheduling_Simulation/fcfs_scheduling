@@ -1,0 +1,105 @@
+class Process:
+    def __init__(self, pid, arrival_time, burst_time):
+        self.pid = pid
+        self.arrival_time = arrival_time
+        self.burst_time = burst_time
+        self.remaining_time = burst_time
+        self.start_time = -1
+        self.completion_time = 0
+        self.turnaround_time = 0
+        self.waiting_time = 0
+        self.response_time = -1
+
+def fcfs_scheduling(processes):
+    time = 0
+    for process in sorted(processes, key=lambda x: x.arrival_time):
+        if time < process.arrival_time:
+            time = process.arrival_time
+        process.start_time = time
+        process.response_time = time - process.arrival_time
+        time += process.burst_time
+        process.completion_time = time
+        process.turnaround_time = process.completion_time - process.arrival_time
+        process.waiting_time = process.turnaround_time - process.burst_time
+    return processes
+
+def sjf_scheduling(processes):
+    time = 0
+    completed = []
+    ready_queue = []
+    processes = sorted(processes, key=lambda x: x.arrival_time)
+    i = 0
+    while len(completed) < len(processes):
+        while i < len(processes) and processes[i].arrival_time <= time:
+            ready_queue.append(processes[i])
+            i += 1
+        if ready_queue:
+            ready_queue.sort(key=lambda x: x.burst_time)
+            process = ready_queue.pop(0)
+            process.start_time = time
+            process.response_time = time - process.arrival_time
+            time += process.burst_time
+            process.completion_time = time
+            process.turnaround_time = process.completion_time - process.arrival_time
+            process.waiting_time = process.turnaround_time - process.burst_time
+            completed.append(process)
+        else:
+            time = processes[i].arrival_time
+    return completed
+
+def round_robin_scheduling(processes, quantum):
+    time = 0
+    queue = []
+    completed = []
+    n = len(processes)
+    processes.sort(key=lambda x: x.arrival_time)
+    i = 0
+    queue.append(processes[i])
+    i += 1
+    in_queue = set([processes[0]])
+
+    while queue:
+        process = queue.pop(0)
+        if process.start_time == -1:
+            process.start_time = time
+            if process.response_time == -1:
+                process.response_time = time - process.arrival_time
+        if process.remaining_time > quantum:
+            time += quantum
+            process.remaining_time -= quantum
+            for j in range(i, n):
+                if processes[j].arrival_time <= time and processes[j] not in in_queue:
+                    queue.append(processes[j])
+                    in_queue.add(processes[j])
+            queue.append(process)
+        else:
+            time += process.remaining_time
+            process.remaining_time = 0
+            process.completion_time = time
+            process.turnaround_time = time - process.arrival_time
+            process.waiting_time = process.turnaround_time - process.burst_time
+            completed.append(process)
+            for j in range(i, n):
+                if processes[j].arrival_time <= time and processes[j] not in in_queue:
+                    queue.append(processes[j])
+                    in_queue.add(processes[j])
+    return completed
+
+# sample
+if __name__ == "__main__":
+    processes_input = [
+        (1, 0, 5),
+        (2, 1, 3),
+        (3, 2, 8),
+        (4, 3, 6)
+    ]
+    quantum = 2
+
+    def wrap(p_list):
+        return [Process(*p) for p in p_list]
+
+    for name, func in [("FCFS", fcfs_scheduling), ("SJF", sjf_scheduling), ("RR", lambda p: round_robin_scheduling(p, quantum))]:
+        result = func(wrap(processes_input))
+        print(f"\n{name} Results:")
+        for p in result:
+            print(f"PID={p.pid}, Start={p.start_time}, Completion={p.completion_time}, Turnaround={p.turnaround_time}, Waiting={p.waiting_time}, Response={p.response_time}")

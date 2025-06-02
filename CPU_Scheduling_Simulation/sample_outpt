@@ -1,0 +1,8 @@
+
+
+###  اجرای برنامه و ذخیره خروجی
+
+برنامه `fcfs_sjf_rr.py` رو اجرا کن:
+
+```bash
+python3 fcfs_sjf_rr.py > sample_output.txt
